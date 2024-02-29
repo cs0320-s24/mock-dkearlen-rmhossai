@@ -18,9 +18,8 @@ export interface Reply {
 }
 
 export default function REPL() {
-  // Create a history to be shared amongst classes/
-  const [history, setHistory] = useState<Reply[]>([]);
-  
+  // TODO: Add some kind of shared state that holds all the commands submitted.
+  const [history, setHistory] = useState<string[]>([]);
 
   return (
     <div className="repl">  
