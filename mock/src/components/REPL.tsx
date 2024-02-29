@@ -2,6 +2,7 @@ import { useState } from 'react';
 import '../styles/main.css';
 import { REPLHistory } from './REPLHistory';
 import { REPLInput } from './REPLInput';
+import { REPLMockCSV } from './REPLMockCSV';
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -12,18 +13,30 @@ import { REPLInput } from './REPLInput';
   You don't need to do that for this gearup.
 */
 
-export default function REPL() {
-  // TODO: Add some kind of shared state that holds all the commands submitted.
-  const [history, setHistory] = useState<string[]>([]);
+export interface Reply {
+  verbose: boolean;
+  commandValue: string;
+  outputValue: string | string[][];
+}
 
+export interface REPLFunction {
+  (commandWords: Array<string>): string | string[][];
+}
+
+
+export default function REPL() {
+  const [history, setHistory] = useState<Reply[]>([]);
   return (
-    <div className="repl">  
+    <div className="repl">
       {/*This is where your REPLHistory might go... You also may choose to add it within your REPLInput 
       component or somewhere else depending on your component organization. What are the pros and cons of each? */}
       {/* TODO: Update your REPLHistory and REPLInput to take in new shared state as props */}
-      <REPLHistory history={history}/>
+      <REPLHistory history={history} />
       <hr></hr>
-      <REPLInput history={history} setHistory={setHistory}/>
+      <REPLInput
+        history={history}
+        setHistory={setHistory}
+      />
     </div>
   );
 }
