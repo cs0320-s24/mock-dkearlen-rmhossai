@@ -1,11 +1,12 @@
 import '../styles/main.css';
+import { Reply } from "../components/REPL.js";
 import { Dispatch, SetStateAction, useState} from 'react';
 import { ControlledInput } from './ControlledInput';
 
 interface REPLInputProps{
-  history: string[];
+  history: Reply[];
   // What setHistory does will track all the input in the order that it was inputted. 
-  setHistory: Dispatch<SetStateAction<string[]>>;
+  setHistory: Dispatch<SetStateAction<Reply[]>>;
 }
 // TODO: Ensure that just keeping the interface return value to be a string is needed.
 // Also ask Albert if putting the interface in the REPLInput makes sense or if it should be somewhere else.
@@ -50,6 +51,11 @@ export function REPLInput(props : REPLInputProps) {
   function handleCommands(commandWords: string[]) {
     // Checks to see if the mode command was called. If so, the function switchModes will execute.
     // TODO: Ensure that this logic works for load_file
+    const newReply: Reply {
+      verbose: true,
+      commandValue: "some command",
+      outputValue: [["output 1", "output 2"]]
+    }
     let command = commandMap.get(commandWords[0]);
     // If the command does not exist, the handle function shoudl just return.
     if (command === undefined) {
