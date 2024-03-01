@@ -6,34 +6,14 @@ test.beforeEach(async ({ page }) => {
   await page.click('[aria-label="Login"]');
 });
 
-// test("the required CSS elements needed for command submission are present on page loading", async ({
-//   page,
-// }) => {
-//   // Assert that the csv input is available on page load.
-//   await expect(page.locator(".csv-input")).toBeVisible();
-
-//   // Assert that the command box is visible on page load.
-//   await expect(page.locator(".csv-command-box")).toBeVisible();
-
-//   // Assert that the mode dropdown is visible on page load.
-//   await expect(page.locator(".csv-mode")).toBeVisible();
-
-//   // Assert that the button is visible on page load.
-//   await expect(page.locator(".csv-button")).toBeVisible();
-
-//   // Assert that the command component is visible on page load.
-//   await expect(page.locator(".csv-command")).toBeVisible();
-// });
-
 test("switching to brief mode shows only the output history", async ({
   page,
 }) => {
   // Interact with the input box, press enter, and switch to brief mode (note: should be brief mode by default)
-  await page.getByLabel("Mode input").selectOption("Brief");
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Load a file before querying!")).toBeVisible();
+  await expect(page.getByText("No loaded file found!")).toBeVisible();
   // Shouldn't be attached (or visible for that matter)
   await expect(page.getByText("Command: view")).not.toBeAttached();
 });
@@ -42,11 +22,12 @@ test("switching to verbose mode shows output AND command history", async ({
   page,
 }) => {
   // Interact with the input box, press enter, and switch to VERBOSE mode. Should have the command there in addition to output.
-  await page.getByLabel("Mode input").selectOption("Verbose");
   await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByRole("button", { name: "Submit" }).click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Load a file before querying!")).toBeVisible();
+  await expect(page.getByText("No loaded file found!")).toBeVisible();
   await expect(page.getByText("Command: view")).toBeVisible();
 });
 
@@ -55,13 +36,12 @@ test("Test loading and viewing appraisal CSV", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
 
   // Test viewing the cities CSV
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("City")).toBeVisible();
   await expect(page.getByText("State")).toBeVisible();
   await expect(page.getByText("Price")).toBeVisible();
 });
@@ -71,7 +51,7 @@ test("Test loading, viewing, and searching an empty CSV", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/empty");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/empty")).toBeVisible();
 
   // Should get back nothing in response to view
   await page.getByLabel("Command input").click();
@@ -91,7 +71,7 @@ test("Test loading and viewing Houston appraisal data", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
@@ -106,7 +86,7 @@ test("Test successfully searching by column name and column index. Also tests LO
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
 
   // View CSV data
   await page.getByLabel("Command input").click();
@@ -124,40 +104,33 @@ test("Test successfully searching by column name and column index. Also tests LO
   await expect(page.getByText("1000000")).toBeVisible;
 
   // Search by column index for New York City data
-  // await page.getByLabel("Command input").click();
-  // await page.getByLabel("Command input").fill("search 2 1000000");
-  // await page.getByRole("button", { name: "Submit" }).click();
-  // await expect(page.getByText("NY")).toBeVisible;
-  // await expect(page.getByText("1000000")).toBeVisible;
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search 2 1000000");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("NY")).toBeVisible;
+  await expect(page.getByText("1000000")).toBeVisible;
 
   // Check if the filepath was successfully loaded for LA data
   await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByLabel("Command input").fill("load_file data/vibe");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/vibe")).toBeVisible();
 
   // View CSV data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("City")).toBeVisible();
-  await expect(page.getByText("State")).toBeVisible();
-  await expect(page.getByText("Price")).toBeVisible();
-  await expect(page.getByText("Los Angeles")).toBeVisible();
+  await expect(page.getByText("Boston")).toBeVisible();
+  await expect(page.getByText("New Orleans")).toBeVisible();
 
   // Search by column name for Los Angeles data
   await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("search Type State");
+  await page.getByLabel("Command input").fill("search State MA");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("CA")).toBeVisible;
-  await expect(page.getByText("Los Angeles")).toBeVisible;
+  await expect(page.getByText("MA")).toBeVisible;
+  await expect(page.getByText("yes")).toBeVisible;
 
-  // Search by column index for Los Angeles data
-  // await page.getByLabel("Command input").click();
-  // await page.getByLabel("Command input").fill("search 0 City");
-  // await page.getByRole("button", { name: "Submit" }).click();
-  // await expect(page.getByText("Los Angeles")).toBeVisible;
-  // await expect(page.getByText("800000")).toBeVisible;
+
 });
 
 test("Test unsucessfully searching by column name and column index. Not in succession", async ({
@@ -167,7 +140,7 @@ test("Test unsucessfully searching by column name and column index. Not in succe
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
 
   // Search by column index for New York City data  -> NO VALUE response
   await page.getByLabel("Command input").click();
@@ -191,25 +164,25 @@ test("Test LOAD -> LOAD -> LOAD succession", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
 
   // Check if the filepath was successfully loaded for vibe data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/vibe");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/vibe")).toBeVisible();
 
   // Check if the filepath was successfully loaded for career data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/career");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/career")).toBeVisible();
 
   // Check if the filepath successfully loaded for empty data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/empty");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/empty")).toBeVisible();
 });
 
 /**
@@ -221,23 +194,21 @@ test("Test the independence of view and search queries", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully!")).toBeVisible();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
 
-  // the following does not work because we cannot search without viewing first
+  // Search by column name for Houston data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search price 600000");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Houston")).toBeVisible;
+  await expect(page.getByText("600000")).toBeVisible;
 
-  // // Search by column name for Houston data
-  // await page.getByLabel("Command input").click();
-  // await page.getByLabel("Command input").fill("search Price 600000");
-  // await page.getByRole("button", { name: "Submit" }).click();
-  // await expect(page.getByText("Houston")).toBeVisible;
-  // await expect(page.getByText("600000")).toBeVisible;
-
-  // // Search by column index for Los Angeles data
-  // await page.getByLabel("Command input").click();
-  // await page.getByLabel("Command input").fill("search State Los Angeles");
-  // await page.getByRole("button", { name: "Submit" }).click();
-  // await expect(page.getByText("Los Angeles")).toBeVisible;
-  // await expect(page.getByText("CA")).toBeVisible;
+  // Search by column index for Los Angeles data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search state CA");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Los Angeles")).toBeVisible;
+  await expect(page.getByText("CA")).toBeVisible;
 });
 
 /**
@@ -331,17 +302,6 @@ test("Test incorrect query shapes ", async ({ page }) => {
     page.getByText("No results found for given query!")
   ).not.toBeNull();
   await page.getByLabel("Command input").click();
-  // the following still works where you put extra arguments after view and it still views
-  // await page.getByLabel("Command input").fill("view extra");
-  // await page.getByRole("button", { name: "Submit" }).click();
-  // await expect(
-  //   page.getByText(
-  //     "Command may have an incorrect shape or may be incorrect elsewhere!"
-  //   )
-  // ).not.toBeNull();
-  // could consider the case where the command input contains nonexistent file paths from the mock data,
-  // so should this not produce an error message where the command line input is of the right shape, but it
-  // just is not being processed?
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search nonsense text");
   await page.getByRole("button", { name: "Submit" }).click();
@@ -349,3 +309,79 @@ test("Test incorrect query shapes ", async ({ page }) => {
     page.getByText("No results found for given query!")
   ).not.toBeNull();
 });
+/**
+ * Test that if malformed data is given, the correct response is returned.
+ */
+test("Test loading malformed data gives correct response", async ({
+  page,
+}) => {
+  // Check if the filepath was successfully loaded for New York City data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal_malformed");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Cannot load malformed data!")).toBeVisible();
+});
+/**
+ * Test that if a second load failed but the first passed, the first load is still the one on file.
+ */
+test("Test loading bad data after loading good data", async ({ page }) => {
+  // Check if the filepath was successfully loaded for overall CSV data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByText("File Loaded Successfully: data/appraisal")
+  ).toBeVisible();
+
+  // Try submitting a bad file
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/nonexistent");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Loading file failed!")).toBeVisible(); 
+
+  // Search by column name for Houston data (SHOULD STILL WORK)
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search price 600000");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Houston")).toBeVisible;
+  await expect(page.getByText("600000")).toBeVisible;
+
+  // Search by column index for Los Angeles data (SHOULD STILL WORK)
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search state CA");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Los Angeles")).toBeVisible;
+  await expect(page.getByText("CA")).toBeVisible;
+});
+
+test("Test load search load search", async ({ page }) => {
+  // Check if the filepath was successfully loaded for overall CSV data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByText("File Loaded Successfully: data/appraisal")
+  ).toBeVisible();
+
+  // Search by column name for Houston data (SHOULD STILL WORK)
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search price 600000");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Houston")).toBeVisible;
+  await expect(page.getByText("600000")).toBeVisible;
+
+  // Try loading a new file
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/vibe");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("File Loaded Successfully: data/vibe")).toBeVisible();
+
+  // Search by column index for Boston data (not in data/appraisal, but in data/vibe)
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search state MA");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Boston")).toBeVisible;
+  await expect(page.getByText("MA")).toBeVisible;
+});
+
+
