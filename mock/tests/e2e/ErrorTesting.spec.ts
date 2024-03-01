@@ -1,9 +1,10 @@
 import { expect, test } from "@playwright/test";
 
 test("viewing without loading throws an error", async ({ page }) => {
-  await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("view");
-  await page.getByRole("button", { name: "Submit" }).click();
+  await page.goto("http://localhost:8000/");
+  await page.click('[aria-label="Login"]');
+  await page.fill('[aria-label="Command input"]', "view");
+  await page.click('button:has-text("Submit")');
   await expect(page.getByText("New York City")).not.toBeVisible();
   await expect(page.getByText("Chicago")).not.toBeVisible();
   await expect(page.getByText("Houston")).not.toBeVisible();
