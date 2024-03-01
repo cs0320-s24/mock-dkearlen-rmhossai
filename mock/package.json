@@ -9,7 +9,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.39.0",
-    "@types/node": "^20.11.5",
+    "@types/node": "^20.11.24",
     "@types/react": "^18.0.9",
     "@types/react-dom": "^18.0.4",
     "@vitejs/plugin-react": "^4.1.0",
@@ -49,5 +49,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "keywords": [],
+  "author": ""
 }
