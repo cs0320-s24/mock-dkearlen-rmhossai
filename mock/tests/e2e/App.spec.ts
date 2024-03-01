@@ -56,45 +56,39 @@ test("after I type into the input box, its text changes", async ({ page }) => {
 
 test("on page load, i see a button", async ({ page }) => {
   // TODO WITH TA: Fill this in!
+
   await page.goto("http://localhost:8000/");
-  await expect(page.waitForSelector("button")).resolves.toBeTruthy();
+  await page.getByLabel("Login").click();
+  await expect(
+    page.getByRole("button", { name: "Submitted 0 times" })
+  ).toBeVisible();
 });
 
 test("after I click the button, its label increments", async ({ page }) => {
   // TODO WITH TA: Fill this in to test your button counter functionality!
+
   await page.goto("http://localhost:8000/");
-  const initialLabel = await page.textContent("button");
-  await page.click("button");
-  await page.waitForFunction((initialLabel) => {
-    const updatedLabel = document.querySelector("button")?.textContent;
-    return updatedLabel != initialLabel;
-  });
-  const updatedLabel = await page.textContent("button");
-  expect(parseInt(updatedLabel!.split(" ")[1])).toBe(
-    parseInt(initialLabel!.split(" ")[1] + 1)
-  );
-  // await page.goto("http://localhost:8000/");
-  // await expect(
-  //   page.getByRole("button", { name: "Submitted 0 times" })
-  // ).toBeVisible();
-  // await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  // await page.getByRole("button", { name: "Submitted 1 time" }).click();
-  // await page.getByRole("button", { name: "Submitted 2 times" }).click();
-  // await page.getByRole("button", { name: "Submitted 3 times" }).click();
-  // await expect(
-  //   page.getByRole("button", { name: "Submitted 4 times" })
-  // ).toBeVisible();
+  await page.getByLabel("Login").click();
+  await expect(
+    page.getByRole("button", { name: "Submitted 0 times" })
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await expect(
+    page.getByRole("button", { name: "Submitted 1 times" })
+  ).toBeVisible();
 });
 
 test("after I click the button, my command gets pushed", async ({ page }) => {
   // TODO: Fill this in to test your button push functionality!
   await page.goto("http://localhost:8000/");
-  const initialHistoryCount = (await page.$$(".repl-history")).length;
-  await page.click("button");
-  await page.waitForFunction((initialCount) => {
-    const newCount = document.querySelectorAll(".repl-history").length;
-    return newCount > 0;
+  await page.getByLabel("Login").click();
+  await page.getByLabel("Command input").fill("Awesome command");
+  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+
+  // you can use page.evaulate to grab variable content from the page for more complex assertions
+  const firstChild = await page.evaluate(() => {
+    const history = document.querySelector(".repl-history");
+    return history?.children[0]?.textContent;
   });
-  const newHistoryCount = (await page.$$(".repl-history")).length;
-  expect(newHistoryCount).toBe(initialHistoryCount + 1);
+  expect(firstChild).toEqual("Awesome command");
 });
