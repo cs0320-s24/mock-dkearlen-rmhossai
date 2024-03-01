@@ -56,29 +56,45 @@ test("after I type into the input box, its text changes", async ({ page }) => {
 
 test("on page load, i see a button", async ({ page }) => {
   // TODO WITH TA: Fill this in!
-  await page.waitForSelector("button");
-  const button = await page.$("button");
-  expect(button).not.toBeNull();
+  await page.goto("http://localhost:8000/");
+  await expect(page.waitForSelector("button")).resolves.toBeTruthy();
 });
 
 test("after I click the button, its label increments", async ({ page }) => {
   // TODO WITH TA: Fill this in to test your button counter functionality!
-  const initialValue = await page.textContent("button");
+  await page.goto("http://localhost:8000/");
+  const initialLabel = await page.textContent("button");
   await page.click("button");
-  await page.waitForFunction((initialValue) => {
-    return document.querySelector("button")?.textContent != initialValue;
+  await page.waitForFunction((initialLabel) => {
+    const updatedLabel = document.querySelector("button")?.textContent;
+    return updatedLabel != initialLabel;
   });
-  const incrementedValue = await page.textContent("button");
-  const initialValueNum = initialValue ? parseInt(initialValue) : 0;
-  const incrementedValueNum = incrementedValue ? parseInt(incrementedValue) : 0;
-  expect(incrementedValueNum).toBe(initialValueNum + 1);
+  const updatedLabel = await page.textContent("button");
+  expect(parseInt(updatedLabel!.split(" ")[1])).toBe(
+    parseInt(initialLabel!.split(" ")[1] + 1)
+  );
+  // await page.goto("http://localhost:8000/");
+  // await expect(
+  //   page.getByRole("button", { name: "Submitted 0 times" })
+  // ).toBeVisible();
+  // await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  // await page.getByRole("button", { name: "Submitted 1 time" }).click();
+  // await page.getByRole("button", { name: "Submitted 2 times" }).click();
+  // await page.getByRole("button", { name: "Submitted 3 times" }).click();
+  // await expect(
+  //   page.getByRole("button", { name: "Submitted 4 times" })
+  // ).toBeVisible();
 });
 
 test("after I click the button, my command gets pushed", async ({ page }) => {
   // TODO: Fill this in to test your button push functionality!
+  await page.goto("http://localhost:8000/");
   const initialHistoryCount = (await page.$$(".repl-history")).length;
   await page.click("button");
-  await page.waitForTimeout(100);
+  await page.waitForFunction((initialCount) => {
+    const newCount = document.querySelectorAll(".repl-history").length;
+    return newCount > 0;
+  });
   const newHistoryCount = (await page.$$(".repl-history")).length;
   expect(newHistoryCount).toBe(initialHistoryCount + 1);
 });
