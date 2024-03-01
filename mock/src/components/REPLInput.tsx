@@ -58,16 +58,21 @@ export function REPLInput(props : REPLInputProps) {
     // All this code should only run if a valid command was given.
     reply.commandValue = commandWords[0];
     if (command === handleModes){
-      // TODO: outputValue isn't correct but reply.verbose is!
-      reply.outputValue = command(commandWords);
       // Though this logic seems backwards as to what brief and verbose should be, this must be backwards since the setter
       // won't run until after the event handler is finished.
-      if (getMode.localeCompare("Brief") === 0) {
+      reply.outputValue = command(commandWords);
+      let mode = reply.outputValue.toString();
+      if (mode.localeCompare("Mode: Verbose") === 0) {
         reply.verbose = true;
-      } else if (getMode.localeCompare("Verbose") === 0) {
+      } else if (mode.localeCompare("Mode: Brief") === 0) {
         reply.verbose = false;
       }
     } else {
+      if (getMode.localeCompare("Verbose") === 0){
+        reply.verbose = true;
+      } else {
+        reply.verbose = false;
+      }
       reply.outputValue = command(commandWords);
     }
     props.setHistory([...props.history, reply]);
@@ -77,12 +82,11 @@ export function REPLInput(props : REPLInputProps) {
   const handleModes: REPLFunction = (
     commandWords: Array<string>
   ): string | string[][] => {
-    let mode = "";
-    if (getMode.localeCompare("Brief") === 0) {
+    let mode;
+    if (getMode.localeCompare("Brief") === 0){
       setMode("Verbose");
       mode = "Verbose";
-    }
-    if (getMode.localeCompare("Verbose") === 0) {
+    } else {
       setMode("Brief");
       mode = "Brief";
     }
