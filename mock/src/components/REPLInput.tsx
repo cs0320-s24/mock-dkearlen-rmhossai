@@ -128,7 +128,7 @@ export function REPLInput(props : REPLInputProps) {
     }
     // Only once we can check if the csv exists should we change the const throughout the input, and that the file loaded successfully.
     setCSV(csv);
-    return "File Loaded Successfully!";
+    return "File Loaded Successfully: " + commandWords[1];
   };
   /**
    * @param commandWords - The array of words given by the user.

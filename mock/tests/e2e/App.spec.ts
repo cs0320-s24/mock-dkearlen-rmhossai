@@ -90,5 +90,5 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
     const history = document.querySelector(".repl-history");
     return history?.children[0]?.textContent;
   });
-  expect(firstChild).toEqual("Awesome command");
+  expect(firstChild).toEqual("Command not found!");
 });

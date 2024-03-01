@@ -20,6 +20,8 @@ export function REPLMockCSV() {
     ["Chicago", "IL", "no"],
     ["Houston", "TX", "yes"],
     ["Phoenix", "AZ", "no"],
+    ["Boston", "MA", "yes"],
+    ["New Orleans", "LA", "yes"]
   ];
   const jobSecurity: string[][] = [
     ["City", "State", "Vibe"],
@@ -66,7 +68,11 @@ export function REPLMockCSVResponse() {
   const realEstateAppraisalsResponse1: string[][] = [
     ["Chicago", "IL", "600000"],
   ];
+  const realEstateAppraisalsResponse2: string[][] = [
+    ["New York City", "NY", "1000000"],
+  ];
   mockDataResponseMap.set("city chicago", realEstateAppraisalsResponse1);
+  mockDataResponseMap.set("2 NY", realEstateAppraisalsResponse2);
   return mockDataResponseMap;
 }
 
