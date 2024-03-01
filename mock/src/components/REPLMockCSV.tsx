@@ -13,6 +13,30 @@ export function REPLMockCSV() {
     ["Houston", "TX", "400000"],
     ["Phoenix", "AZ", "350000"],
   ];
+  const vibe: string[][] = [
+    ["City", "State", "Vibe"],
+    ["New York City", "NY", "yes"],
+    ["Los Angeles", "CA", "yes"],
+    ["Chicago", "IL", "no"],
+    ["Houston", "TX", "yes"],
+    ["Phoenix", "AZ", "no"],
+  ];
+  const jobSecurity: string[][] = [
+    ["City", "State", "Vibe"],
+    ["New York City", "NY", "high"],
+    ["Los Angeles", "CA", "mid"],
+    ["Chicago", "IL", "low"],
+    ["Houston", "TX", "high"],
+    ["Phoenix", "AZ", "mid"],
+  ];
+  const empty: string[][] = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ];
   const csvWithHeaders: string[][] = [
     ["City", "State", "Price"],
     ["New York City", "NY", "1000000"],
@@ -29,9 +53,11 @@ export function REPLMockCSV() {
     ["Phoenix", "AZ", "350000"],
   ];
   mockDataMap.set("data/appraisal", realEstateAppraisals);
+  mockDataMap.set("data/vibe", vibe);
+  mockDataMap.set("data/career", jobSecurity);
+  mockDataMap.set("data/empty", empty);
   mockDataMap.set("data/withHeaders", csvWithHeaders);
   mockDataMap.set("data/noHeaders", csvNoHeaders);
-
   return mockDataMap;
 }
 
