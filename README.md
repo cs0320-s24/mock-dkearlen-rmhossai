@@ -7,7 +7,7 @@ GitHub Repository: https://github.com/cs0320-s24/mock-dkearlen-rmhossai/
 
 # Project Details
 
-The Mock project serves as a frontend emulation tool, replicating the behavior of the application's frontend without the presence of a backend system. This is achieved by simulating the load, search, and view functionality using pre-defined mock data and responses. In essence, Mock acts as a stand-in for the backend processing, enabling developers to test and validate the frontend functionality in isolation.
+The Mock project serves as a frontend emulation tool, replicating the behavior of the application's frontend without the presence of a backend system. This is achieved by simulating the load, search, and view functionality using pre-defined mock data and responses. In essence, Mock acts as a stand-in for the backend processing, enabling developers to test and validate the frontend functionality in isolation. This project took about 8 hours to complete.
 
 # Design Choices
 

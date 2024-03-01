@@ -384,10 +384,14 @@ test("Test load search load search", async ({ page }) => {
   await expect(page.getByText("MA")).toBeVisible;
 });
 
-test("viewing without loading first then loading then viewing", async ({ page }) => {
-  // View LA data
+test("viewing without loading first then loading then viewing (IN VERBOSE)", async ({ page }) => {
+  // Try viewing without inputting data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("mode");
   await page.getByRole("button", { name: "Submit" }).click();
 
   // DO NOT expect any HTML table elements to get rendered.
@@ -399,6 +403,7 @@ test("viewing without loading first then loading then viewing", async ({ page })
   // Throw an error message
   await expect(page.getByText("No loaded file found!")).toBeVisible;
 
+  // Now load
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("load_file data/appraisal");
   await page.getByRole("button", { name: "Submit" }).click();
@@ -409,10 +414,51 @@ test("viewing without loading first then loading then viewing", async ({ page })
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-
   // Expect the HTML table elements to get rendered. We can't add city and New York City since they both hold "city", we'd have
   // to be more specific
   await expect(page.getByText("Los Angeles")).toBeVisible();
   await expect(page.getByText("Chicago")).toBeVisible();
 });
+
+test("Changing modes works", async ({
+  page,
+}) => {
+  // Interact with the input box, press enter, and switch to brief mode (note: should be brief mode by default)
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Command: mode")).toBeVisible();
+  // Shouldn't be attached (or visible for that matter)
+  await expect(page.getByText("Output: Mode: Verbose")).toBeAttached();
+
+  // Now load in verbose mode
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  // This would not be visible in brief mode
+  await expect(page.getByText("Command: load_file")).toBeVisible();
+  await expect(
+    page.getByText("Output: File Loaded Successfully: data/appraisal")
+  ).toBeVisible();
+
+  // Should print Mode: Brief if we switch mode again
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Mode: Brief")).toBeAttached();
+
+  // Now load in brief.
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/vibe");
+  await page.getByRole("button", { name: "Submit" }).click();
+  // The brief version should be visible.
+  await expect(
+    page.getByText("File Loaded Successfully: data/vibe")
+  ).toBeVisible();
+  // The verbose version should not be visible.
+  await expect(
+    page.getByText("Output: File Loaded Successfully: data/vibe")
+  ).not.toBeVisible();
+});
+
 
