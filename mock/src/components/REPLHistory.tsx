@@ -2,10 +2,17 @@
 import { text } from 'stream/consumers';
 import { REPLFunction, Reply } from '../components/REPL.js';
 import '../styles/main.css';
-
+/**
+ * @author devonkearleng rmhossai
+ * @version 1.0 - REPLHistory handles and prints the Reply based on the Reply information.
+ */
 interface REPLHistoryProps{
     history: Reply[];
 }
+/**
+ * @param props - The props given by the main REPL class.
+ * @returns - Returns information to the user based on what they inputted. 
+ */
 export function REPLHistory(props : REPLHistoryProps) {
     return (
       <div className="repl-history">
@@ -14,6 +21,7 @@ export function REPLHistory(props : REPLHistoryProps) {
           if (!command.verbose && Array.isArray(command.outputValue)) {
             return (
             <table>
+              {/** This code below turns our 2D array output into a table. */}
               <tbody>
                 {command.outputValue.map((row, rowIndex) => (
                   <tr key={rowIndex}>
@@ -44,6 +52,7 @@ export function REPLHistory(props : REPLHistoryProps) {
                   Output:
                 </pre>
                 <table>
+                  {/** This code below turns our 2D array output into a table. */}
                   <tbody>
                     {command.outputValue.map((row, rowIndex) => (
                       <tr key={rowIndex}>

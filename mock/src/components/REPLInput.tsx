@@ -4,12 +4,19 @@ import { Dispatch, SetStateAction, useState} from 'react';
 import { ControlledInput } from './ControlledInput';
 import { REPLMockCSV, REPLMockCSVResponse } from './REPLMockCSV';
 
+/**
+ * @author devonkearleng rmhossai
+ * @version 1.0 - REPLInput is the main class where we handle submissions which will then be handled by REPLHistory
+ */
+
+// The interface REPLInputProps is where we will hold the data given by REPL.
 interface REPLInputProps {
   history: Reply[];
   // What setHistory does will track all the input in the order that it was inputted.
   setHistory: Dispatch<SetStateAction<Reply[]>>;
 }
-// TODO: Check to see if verbose should be a boolean or a 
+
+// The class ReplyInstance is a class that implements the interface Reply so that we can add it to history.
 class ReplyInstance implements Reply {
   constructor(
     public verbose: boolean,
@@ -17,9 +24,11 @@ class ReplyInstance implements Reply {
     public outputValue: string | string[][]
   ) {}
 }
-
 const commandMap = new Map<string, REPLFunction>();
 
+/**
+ * @param props - The props given by the main REPL class.
+ */
 export function REPLInput(props : REPLInputProps) {
   // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
@@ -32,7 +41,9 @@ export function REPLInput(props : REPLInputProps) {
   const [getCSV, setCSV] = useState<string[][]>();
   let csvMap = REPLMockCSV();
   let csvResponseMap = REPLMockCSVResponse();
-  // Creates a function to handle the submit button
+  /**
+   * @param commandString - Takes in the input that the user gave through the command line.
+   */
   function handleSubmit(commandString: string) {
     addSubmitCount(submitCount + 1);
     let lowerCommand = new String(commandString.toLowerCase());
@@ -43,10 +54,12 @@ export function REPLInput(props : REPLInputProps) {
     commandMap.set("search", handleSearch);
     handleCommands(commandWords);
   }
-
+  /**
+   * @param commandWords - Takes in the input given by the user but after being split and put into lowercase.
+   * @returns - Returns nothing, but adds to the history if a reply is given.
+   */
   function handleCommands(commandWords: string[]) {
     // Checks to see if the mode command was called. If so, the function switchModes will execute.
-    // TODO: Ensure that this logic works for load_file
     let reply = new ReplyInstance(false, "", []);
     let command = commandMap.get(commandWords[0]);
     // If the command does not exist, the handle function should just return.
@@ -57,7 +70,7 @@ export function REPLInput(props : REPLInputProps) {
     }
     // All this code should only run if a valid command was given.
     reply.commandValue = commandWords[0];
-    if (command === handleModes){
+    if (command === handleModes) {
       // Though this logic seems backwards as to what brief and verbose should be, this must be backwards since the setter
       // won't run until after the event handler is finished.
       reply.outputValue = command(commandWords);
@@ -68,7 +81,7 @@ export function REPLInput(props : REPLInputProps) {
         reply.verbose = false;
       }
     } else {
-      if (getMode.localeCompare("Verbose") === 0){
+      if (getMode.localeCompare("Verbose") === 0) {
         reply.verbose = true;
       } else {
         reply.verbose = false;
@@ -78,12 +91,15 @@ export function REPLInput(props : REPLInputProps) {
     props.setHistory([...props.history, reply]);
   }
 
-  // Creates a function to handle changing between modes
+  /**
+   * @param commandWords - The array of words given by the user.
+   * @returns - Returns a string with the output we want to be fed back to the user.
+   */
   const handleModes: REPLFunction = (
     commandWords: Array<string>
   ): string | string[][] => {
     let mode;
-    if (getMode.localeCompare("Brief") === 0){
+    if (getMode.localeCompare("Brief") === 0) {
       setMode("Verbose");
       mode = "Verbose";
     } else {
@@ -92,12 +108,15 @@ export function REPLInput(props : REPLInputProps) {
     }
     return "Mode: " + mode;
   };
-  
+  /**
+   *
+   * @param commandWords - The array of words given by the user.
+   * @returns - Returns a string saying if either loading the file succeeded or failed.
+   */
   const handleLoad: REPLFunction = (
     commandWords: Array<string>
   ): string | string[][] => {
-    // TODO: See if using CSVMap can stay consistent with a backend, or if this is just good mocking.
-    // First check if the csv is undefined or actually exists
+    // First check if the csv is undefined or actually exists in our CSV map.
     let csv = csvMap.get(commandWords[1]);
     if (csv === undefined) {
       return "Loading file failed!";
@@ -106,7 +125,10 @@ export function REPLInput(props : REPLInputProps) {
     setCSV(csv);
     return "File Loaded Successfully!";
   };
-
+  /**
+   * @param commandWords - The array of words given by the user.
+   * @returns - Returns either a string saying no file was found or returns a 2D array representing the table we want.
+   */
   const handleView: REPLFunction = (
     commandWords: Array<string>
   ): string | string[][] => {
@@ -116,32 +138,30 @@ export function REPLInput(props : REPLInputProps) {
     // TODO: Make sure that this works as intended (should print a table).
     return getCSV;
   };
-
+  /**
+   * @param commandWords - The array of words given by the user.
+   * @returns - Returns either a string saying no file was found or returns a 2D array representing the table we want.
+   */
   const handleSearch: REPLFunction = (
     commandWords: Array<string>
   ): string | string[][] => {
-    if (getCSV === undefined){
+    if (getCSV === undefined) {
       return "No loaded file found!";
     }
-    let concatenateResponse = commandWords[1] + " " + commandWords[2]
+    let concatenateResponse = commandWords[1] + " " + commandWords[2];
     let csvResponse = csvResponseMap.get(concatenateResponse);
-    if (csvResponse === undefined){
-      return "No results found for given query!"
+    if (csvResponse === undefined) {
+      return "No results found for given query!";
     }
     return csvResponse;
   };
 
-  
   /**
-   * We suggest breaking down this component into smaller components, think about the individual pieces
-   * of the REPL and how they connect to each other...
+   * REPLInput returns all the components of the input, including the command line and the submit button.
    */
   return (
     <div className="repl-input">
-      {/* This is a comment within the JSX. Notice that it's a TypeScript comment wrapped in
-            braces, so that React knows it should be interpreted as TypeScript */}
-      {/* I opted to use this HTML tag; you don't need to. It structures multiple input fields
-            into a single unit, which makes it easier for screenreaders to navigate. */}
+      {/** This section handles the command line. */}
       <fieldset>
         <legend>Enter a command:</legend>
         <ControlledInput
