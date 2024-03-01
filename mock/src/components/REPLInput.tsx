@@ -2,7 +2,7 @@ import '../styles/main.css';
 import { REPLFunction, Reply } from '../components/REPL.js';
 import { Dispatch, SetStateAction, useState} from 'react';
 import { ControlledInput } from './ControlledInput';
-import { REPLMockCSV, REPLMockCSVResponse } from './REPLMockCSV';
+import { REPLMockCSV, REPLMockCSVResponse, REPLCSVMalformed } from './REPLMockCSV';
 
 /**
  * @author devonkearleng rmhossai
@@ -41,6 +41,7 @@ export function REPLInput(props : REPLInputProps) {
   const [getCSV, setCSV] = useState<string[][]>();
   let csvMap = REPLMockCSV();
   let csvResponseMap = REPLMockCSVResponse();
+  let csvMalformedMap = REPLCSVMalformed();
   /**
    * @param commandString - Takes in the input that the user gave through the command line.
    */
@@ -118,6 +119,10 @@ export function REPLInput(props : REPLInputProps) {
   ): string | string[][] => {
     // First check if the csv is undefined or actually exists in our CSV map.
     let csv = csvMap.get(commandWords[1]);
+    let csvMalformed = csvMalformedMap.get(commandWords[1]);
+    if (csvMalformed !== undefined){
+      return "Cannot load malformed data!";
+    }
     if (csv === undefined) {
       return "Loading file failed!";
     }

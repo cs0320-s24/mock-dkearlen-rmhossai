@@ -37,14 +37,6 @@ export function REPLMockCSV() {
     ["", "", ""],
     ["", "", ""],
   ];
-  const malformedCSV: string[][] = [
-    ["City", "State", "Price"],
-    ["New York City", "NY", ""], // missing the price column
-    ["Los Angeles", "CA", "800000"],
-    ["Chicago", "IL", "600000"],
-    ["Houston", "TX", "400000"],
-    ["Phoenix", "AZ", "350000"],
-  ];
   const csvWithHeaders: string[][] = [
     ["City", "State", "Price"],
     ["New York City", "NY", "1000000"],
@@ -64,10 +56,8 @@ export function REPLMockCSV() {
   mockDataMap.set("data/vibe", vibe);
   mockDataMap.set("data/career", jobSecurity);
   mockDataMap.set("data/empty", empty);
-  mockDataMap.set("data/malformed", malformedCSV);
   mockDataMap.set("data/withHeaders", csvWithHeaders);
   mockDataMap.set("data/noHeaders", csvNoHeaders);
-
   return mockDataMap;
 }
 
@@ -78,6 +68,20 @@ export function REPLMockCSVResponse() {
   ];
   mockDataResponseMap.set("city chicago", realEstateAppraisalsResponse1);
   return mockDataResponseMap;
+}
+
+export function REPLCSVMalformed(){
+  const mockCSVMalformedMap = new Map<string, string[][]>();
+  const malformedCSV: string[][] = [
+    ["City", "State", "Price"],
+    ["New York City", "NY", ""], // Missing Price column
+    ["Los Angeles", "CA", "800000"],
+    ["Chicago", "IL", "600000"],
+    ["Houston", "TX", "400000"],
+    ["Phoenix", "AZ", "350000"],
+  ];
+  mockCSVMalformedMap.set("data/appraisal_malformed", malformedCSV);
+  return mockCSVMalformedMap;
 }
 // TODO: Delete this examples and put a better example up.
 
