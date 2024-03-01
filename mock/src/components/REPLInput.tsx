@@ -1,8 +1,12 @@
-import '../styles/main.css';
-import { REPLFunction, Reply } from '../components/REPL.js';
-import { Dispatch, SetStateAction, useState} from 'react';
-import { ControlledInput } from './ControlledInput';
-import { REPLMockCSV, REPLMockCSVResponse, REPLCSVMalformed } from './REPLMockCSV';
+import "../styles/main.css";
+import { REPLFunction, Reply } from "../components/REPL.js";
+import { Dispatch, SetStateAction, useState } from "react";
+import { ControlledInput } from "./ControlledInput";
+import {
+  REPLMockCSV,
+  REPLMockCSVResponse,
+  REPLCSVMalformed,
+} from "./REPLMockCSV";
 
 /**
  * @author devonkearleng rmhossai
@@ -29,7 +33,7 @@ const commandMap = new Map<string, REPLFunction>();
 /**
  * @param props - The props given by the main REPL class.
  */
-export function REPLInput(props : REPLInputProps) {
+export function REPLInput(props: REPLInputProps) {
   // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
@@ -43,7 +47,8 @@ export function REPLInput(props : REPLInputProps) {
   let csvResponseMap = REPLMockCSVResponse();
   let csvMalformedMap = REPLCSVMalformed();
   /**
-   * @param commandString - Takes in the input that the user gave through the command line.
+   * Handles the submission of a command string.
+   * @param commandString - The input command string.
    */
   function handleSubmit(commandString: string) {
     addSubmitCount(submitCount + 1);
@@ -92,6 +97,8 @@ export function REPLInput(props : REPLInputProps) {
     props.setHistory([...props.history, reply]);
   }
 
+  // handler functions for different commands
+
   /**
    * @param commandWords - The array of words given by the user.
    * @returns - Returns a string with the output we want to be fed back to the user.
@@ -120,7 +127,7 @@ export function REPLInput(props : REPLInputProps) {
     // First check if the csv is undefined or actually exists in our CSV map.
     let csv = csvMap.get(commandWords[1]);
     let csvMalformed = csvMalformedMap.get(commandWords[1]);
-    if (csvMalformed !== undefined){
+    if (csvMalformed !== undefined) {
       return "Cannot load malformed data!";
     }
     if (csv === undefined) {
