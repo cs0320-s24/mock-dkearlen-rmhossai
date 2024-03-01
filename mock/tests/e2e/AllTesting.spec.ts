@@ -384,4 +384,35 @@ test("Test load search load search", async ({ page }) => {
   await expect(page.getByText("MA")).toBeVisible;
 });
 
+test("viewing without loading first then loading then viewing", async ({ page }) => {
+  // View LA data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  // DO NOT expect any HTML table elements to get rendered.
+  await expect(page.getByText("City")).not.toBeVisible();
+  await expect(page.getByText("New York City")).not.toBeVisible();
+  await expect(page.getByText("Los Angeles")).not.toBeVisible();
+  await expect(page.getByText("Chicago")).not.toBeVisible();
+
+  // Throw an error message
+  await expect(page.getByText("No loaded file found!")).toBeVisible;
+
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByText("File Loaded Successfully: data/appraisal")
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+
+  // Expect the HTML table elements to get rendered. We can't add city and New York City since they both hold "city", we'd have
+  // to be more specific
+  await expect(page.getByText("Los Angeles")).toBeVisible();
+  await expect(page.getByText("Chicago")).toBeVisible();
+});
 
