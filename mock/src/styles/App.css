@@ -10,5 +10,5 @@
   align-items: center;
   justify-content: center;
   font-size: calc(1px + 2vmin);
-  color: #f9f9f9;
+  color: #f9f9f9; /* Updated font color */
 }
