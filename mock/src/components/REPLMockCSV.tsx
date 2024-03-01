@@ -2,7 +2,8 @@ import { Dispatch, SetStateAction, useState } from "react";
 /**
  * @author devonkearleng rmhossai
  * @version 1.0 - REPLMockCSV is where we hold our mocked data that we will use to run tests/run the mock frontend on.
-*/
+ * @returns A map containing various mocked CSV data.
+ */
 export function REPLMockCSV() {
   const mockDataMap = new Map<string, string[][]>();
   const realEstateAppraisals: string[][] = [
@@ -24,7 +25,7 @@ export function REPLMockCSV() {
     ["New Orleans", "LA", "yes"]
   ];
   const jobSecurity: string[][] = [
-    ["City", "State", "Vibe"],
+    ["City", "State", "Security"],
     ["New York City", "NY", "high"],
     ["Los Angeles", "CA", "mid"],
     ["Chicago", "IL", "low"],
@@ -63,6 +64,10 @@ export function REPLMockCSV() {
   return mockDataMap;
 }
 
+/**
+ * REPLMockCSVResponse provides mocked responses for specific CSV queries.
+ * @returns A map containing mocked responses for CSV queries.
+ */
 export function REPLMockCSVResponse() {
   const mockDataResponseMap = new Map<string, string[][]>();
   const realEstateAppraisalsResponse1: string[][] = [
@@ -76,7 +81,11 @@ export function REPLMockCSVResponse() {
   return mockDataResponseMap;
 }
 
-export function REPLCSVMalformed(){
+/**
+ * REPLCSVMalformed provides mocked malformed CSV data.
+ * @returns A map containing mocked malformed CSV data.
+ */
+export function REPLCSVMalformed() {
   const mockCSVMalformedMap = new Map<string, string[][]>();
   const malformedCSV: string[][] = [
     ["City", "State", "Price"],
@@ -89,8 +98,6 @@ export function REPLCSVMalformed(){
   mockCSVMalformedMap.set("data/appraisal_malformed", malformedCSV);
   return mockCSVMalformedMap;
 }
-// TODO: Delete this examples and put a better example up.
-
 export function REPMalformedCSVResponse() {
   const mockDataResponseMap = new Map<string, string[][]>();
   const realEstateAppraisalsResponse1: string[][] = [
