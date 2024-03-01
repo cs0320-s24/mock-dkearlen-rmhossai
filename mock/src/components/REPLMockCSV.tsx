@@ -2,7 +2,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 /**
  * @author devonkearleng rmhossai
  * @version 1.0 - REPLMockCSV is where we hold our mocked data that we will use to run tests/run the mock frontend on.
-*/
+ */
 export function REPLMockCSV() {
   const mockDataMap = new Map<string, string[][]>();
   const realEstateAppraisals: string[][] = [
@@ -22,7 +22,7 @@ export function REPLMockCSV() {
     ["Phoenix", "AZ", "no"],
   ];
   const jobSecurity: string[][] = [
-    ["City", "State", "Vibe"],
+    ["City", "State", "Security"],
     ["New York City", "NY", "high"],
     ["Los Angeles", "CA", "mid"],
     ["Chicago", "IL", "low"],
