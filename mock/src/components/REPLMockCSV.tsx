@@ -22,7 +22,8 @@ export function REPLMockCSV() {
     ["Houston", "TX", "yes"],
     ["Phoenix", "AZ", "no"],
     ["Boston", "MA", "yes"],
-    ["New Orleans", "LA", "yes"]
+    ["New Orleans", "LA", "yes"],
+    ["Austin", "TX", "yes"]
   ];
   const jobSecurity: string[][] = [
     ["City", "State", "Security"],
@@ -76,8 +77,25 @@ export function REPLMockCSVResponse() {
   const realEstateAppraisalsResponse2: string[][] = [
     ["New York City", "NY", "1000000"],
   ];
+  const realEstateAppraisalsResponse3: string[][] = [
+    ["New York City", "NY", "1000000"],
+  ];
+  const vibesResponse1: string[][] = [
+    ["Boston", "MA", "yes"]
+  ];
+  const realEstateAppraisalsResponse4: string[][] = [
+    ["Houston", "TX", "400000"],
+  ];
+  const realEstateAppraisalsResponse5: string[][] = [
+    ["Los Angeles", "CA", "800000"],
+  ];
   mockDataResponseMap.set("city chicago", realEstateAppraisalsResponse1);
-  mockDataResponseMap.set("2 NY", realEstateAppraisalsResponse2);
+  mockDataResponseMap.set("2 ny", realEstateAppraisalsResponse2);
+  mockDataResponseMap.set("price 1000000", realEstateAppraisalsResponse3);
+  mockDataResponseMap.set("2 1000000", realEstateAppraisalsResponse3);
+  mockDataResponseMap.set("state ma", vibesResponse1);
+  mockDataResponseMap.set("price 600000", realEstateAppraisalsResponse4);
+  mockDataResponseMap.set("state ca", realEstateAppraisalsResponse5);
   return mockDataResponseMap;
 }
 
@@ -97,34 +115,4 @@ export function REPLCSVMalformed() {
   ];
   mockCSVMalformedMap.set("data/appraisal_malformed", malformedCSV);
   return mockCSVMalformedMap;
-}
-export function REPMalformedCSVResponse() {
-  const mockDataResponseMap = new Map<string, string[][]>();
-  const realEstateAppraisalsResponse1: string[][] = [
-    ["Chicago", "IL", "600000"],
-  ];
-  mockDataResponseMap.set("city chicago", realEstateAppraisalsResponse1);
-  return mockDataResponseMap;
-}
-
-export function REPLCSVwHeadersResponse() {
-  const mockDataResponseMap = new Map<string, string[][]>();
-  const realEstateAppraisalsResponse1: string[][] = [
-    ["New York City", "NY", "1000000"],
-    ["Los Angeles", "CA", "800000"],
-    ["Chicago", "IL", "600000"],
-    ["Houston", "TX", "400000"],
-    ["Phoenix", "AZ", "350000"],
-  ];
-  mockDataResponseMap.set("city chicago", realEstateAppraisalsResponse1); // Example data, replace key accordingly
-  return mockDataResponseMap;
-}
-
-export function REPLCSVwNoHeadersResponse() {
-  const mockDataResponseMap = new Map<string, string[][]>();
-  const realEstateAppraisalsResponse1: string[][] = [
-    ["Chicago", "IL", "600000"],
-  ];
-  mockDataResponseMap.set("city chicago", realEstateAppraisalsResponse1); // Example data, replace key accordingly
-  return mockDataResponseMap;
 }

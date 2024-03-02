@@ -57,13 +57,12 @@ test("Test loading, viewing, and searching an empty CSV", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByLabel("")).toBeNull;
 
   // Should find a command not found response to searching the CSV.
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("emptyfp search 20 Value");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Command Not Found!")).toBeNull;
+  await expect(page.getByText("Command Not Found!")).toBeVisible();
 });
 
 test("Test loading and viewing Houston appraisal data", async ({ page }) => {
@@ -75,11 +74,11 @@ test("Test loading and viewing Houston appraisal data", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("State")).toBeVisible;
-  await expect(page.getByText("TX")).toBeVisible;
+  await expect(page.getByText("State")).toBeVisible();
+  await expect(page.getByText("TX")).toBeVisible();
 });
 
-test("Test successfully searching by column name and column index. Also tests LOAD -> SEARCH -> VIEW 2x in a row", async ({
+test("Test successfully searching by column name", async ({
   page,
 }) => {
   // Check if the filepath was successfully loaded for appraisal data
@@ -88,49 +87,77 @@ test("Test successfully searching by column name and column index. Also tests LO
   await page.getByRole("button", { name: "Submit" }).click();
   await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
 
-  // View CSV data
+  // Search by column name for New York City data
   await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("view");
+  await page.getByLabel("Command input").fill("search Price 1000000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("City")).toBeVisible;
-  await expect(page.getByText("State")).toBeVisible;
-  await expect(page.getByText("Price")).toBeVisible;
+  await expect(page.getByText("NY")).toBeVisible();
+  await expect(page.getByText("1000000")).toBeVisible();
+});
+
+test("Test successfully searching by column index", async ({ page }) => {
+  // Check if the filepath was successfully loaded for appraisal data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByText("File Loaded Successfully: data/appraisal")
+  ).toBeVisible();
+
+  // Search by column name for New York City data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("search 2 1000000");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("NY")).toBeVisible();
+  await expect(page.getByText("1000000")).toBeVisible();
+});
+
+test("Test successfully searching by column name. Also tests LOAD -> SEARCH -> VIEW 2x in a row", async ({
+  page,
+}) => {
+  // Check if the filepath was successfully loaded for appraisal data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByText("File Loaded Successfully: data/appraisal")
+  ).toBeVisible();
 
   // Search by column name for New York City data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search Price 1000000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("NY")).toBeVisible;
-  await expect(page.getByText("1000000")).toBeVisible;
-
-  // Search by column index for New York City data
-  await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("search 2 1000000");
-  await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("NY")).toBeVisible;
-  await expect(page.getByText("1000000")).toBeVisible;
-
-  // Check if the filepath was successfully loaded for LA data
-  await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("load_file data/vibe");
-  await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("File Loaded Successfully: data/vibe")).toBeVisible();
+  await expect(page.getByText("NY")).toBeVisible();
+  await expect(page.getByText("1000000")).toBeVisible();
 
   // View CSV data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("view");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Boston")).toBeVisible();
-  await expect(page.getByText("New Orleans")).toBeVisible();
+  await expect(page.getByText("State")).toBeVisible();
+  await expect(page.getByText("Price")).toBeVisible();
+
+  // Check if the filepath was successfully loaded for LA data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/vibe");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(
+    page.getByText("File Loaded Successfully: data/vibe")
+  ).toBeVisible();
 
   // Search by column name for Los Angeles data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search State MA");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("MA")).toBeVisible;
-  await expect(page.getByText("yes")).toBeVisible;
+  await expect(page.getByText("Boston")).toBeVisible();
+  await expect(page.getByText("yes")).toBeVisible();
 
-
+  // View CSV data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("Austin")).toBeVisible();
+  await expect(page.getByText("New Orleans")).toBeVisible();
 });
 
 test("Test unsucessfully searching by column name and column index. Not in succession", async ({
@@ -146,13 +173,23 @@ test("Test unsucessfully searching by column name and column index. Not in succe
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search 23 600000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("No results found for given query!")).toBeVisible;
+  await expect(page.getByText("No results found for given query!")).toBeVisible();
+});
 
-  // Search by column name for New York City data -> NO VALUE response
+test("Test unsucessfully searching by column name. Not in succession", async ({
+  page,
+}) => {
+  // Check if the filepath was successfully loaded for New York City data
+  await page.getByLabel("Command input").click();
+  await page.getByLabel("Command input").fill("load_file data/appraisal");
+  await page.getByRole("button", { name: "Submit" }).click();
+  await expect(page.getByText("File Loaded Successfully: data/appraisal")).toBeVisible();
+
+  // Search by column index for New York City data  -> NO VALUE response
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search Tim 600000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("No results found for given query!")).toBeVisible;
+  await expect(page.getByText("No results found for given query!")).toBeVisible();
 });
 
 /**
@@ -200,15 +237,15 @@ test("Test the independence of view and search queries", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search price 600000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Houston")).toBeVisible;
-  await expect(page.getByText("600000")).toBeVisible;
+  await expect(page.getByText("Houston")).toBeVisible();
+  await expect(page.getByText("TX")).toBeVisible();
 
   // Search by column index for Los Angeles data
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search state CA");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Los Angeles")).toBeVisible;
-  await expect(page.getByText("CA")).toBeVisible;
+  await expect(page.getByText("Los Angeles")).toBeVisible();
+  await expect(page.getByText("CA")).toBeVisible();
 });
 
 /**
@@ -228,7 +265,7 @@ test("viewing without loading first leads an error", async ({ page }) => {
   await expect(page.getByText("Chicago")).not.toBeVisible();
 
   // Throw an error message
-  await expect(page.getByText("No loaded file found!")).toBeVisible;
+  await expect(page.getByText("No loaded file found!")).toBeVisible();
 });
 
 /**
@@ -237,25 +274,23 @@ test("viewing without loading first leads an error", async ({ page }) => {
 test("searching without loading first throws an error", async ({ page }) => {
   // Search by column index
   await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("search Type Price");
+  await page.getByLabel("Command input").fill("search 2 600000");
   await page.getByRole("button", { name: "Submit" }).click();
 
   // Expect the text you'd get back in a normal case to NOT show up
-  await expect(page.getByText("Houston")).not.toBeVisible;
-  await expect(page.getByText("400000")).not.toBeVisible;
+  await expect(page.getByText("Houston")).not.toBeVisible();
+  await expect(page.getByText("400000")).not.toBeVisible();
 
   // Expect error message to show up
-  await expect(page.getByText("No loaded file found!")).toBeVisible;
+  await expect(page.getByText("No loaded file found!")).toBeVisible();
 
   // Search by column name
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search Price 600000");
   await page.getByRole("button", { name: "Submit" }).click();
   // Expect text you'd get back in a normal case to not show up
-  await expect(page.getByText("Houston")).not.toBeVisible;
-  await expect(page.getByText("600000")).not.toBeVisible;
-  // Expect error message to show up
-  await expect(page.getByText("No loaded file found!")).toBeVisible;
+  await expect(page.getByText("Houston")).not.toBeVisible();
+  await expect(page.getByText("600000")).not.toBeVisible();
 });
 
 /**
@@ -343,15 +378,15 @@ test("Test loading bad data after loading good data", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search price 600000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Houston")).toBeVisible;
-  await expect(page.getByText("600000")).toBeVisible;
+  await expect(page.getByText("Houston")).toBeVisible();
+  await expect(page.getByText("TX")).toBeVisible();
 
   // Search by column index for Los Angeles data (SHOULD STILL WORK)
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search state CA");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Los Angeles")).toBeVisible;
-  await expect(page.getByText("CA")).toBeVisible;
+  await expect(page.getByText("Los Angeles")).toBeVisible();
+  await expect(page.getByText("CA")).toBeVisible();
 });
 
 test("Test load search load search", async ({ page }) => {
@@ -367,8 +402,8 @@ test("Test load search load search", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search price 600000");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Houston")).toBeVisible;
-  await expect(page.getByText("600000")).toBeVisible;
+  await expect(page.getByText("Houston")).toBeVisible();
+  await expect(page.getByText("TX")).toBeVisible();
 
   // Try loading a new file
   await page.getByLabel("Command input").click();
@@ -380,8 +415,7 @@ test("Test load search load search", async ({ page }) => {
   await page.getByLabel("Command input").click();
   await page.getByLabel("Command input").fill("search state MA");
   await page.getByRole("button", { name: "Submit" }).click();
-  await expect(page.getByText("Boston")).toBeVisible;
-  await expect(page.getByText("MA")).toBeVisible;
+  await expect(page.getByText("Boston")).toBeVisible();
 });
 
 test("viewing without loading first then loading then viewing (IN VERBOSE)", async ({ page }) => {
@@ -401,7 +435,7 @@ test("viewing without loading first then loading then viewing (IN VERBOSE)", asy
   await expect(page.getByText("Chicago")).not.toBeVisible();
 
   // Throw an error message
-  await expect(page.getByText("No loaded file found!")).toBeVisible;
+  await expect(page.getByText("No loaded file found!")).toBeVisible();
 
   // Now load
   await page.getByLabel("Command input").click();
